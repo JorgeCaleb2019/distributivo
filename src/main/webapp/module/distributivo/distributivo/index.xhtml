@@ -1,0 +1,163 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:jsf="http://xmlns.jcp.org/jsf"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <script type="application/javascript">
+            function mensajear(msg){
+            alert(msg);
+            return;
+            }
+
+        </script>
+    </h:head>       
+    <h:form id="frmPrincipal">
+        <div class="card docs">
+            <div class="ui-g">
+                <!--<p:messages autoUpdate="true" />-->
+                <h:form id="formDatos">
+                    <div class="ui-g-12 ui-md-12 ui-lg-12"><span style="font-size: 18px">Asignar Distributivo por docente</span></div>
+                    <div class="ui-g-12 ui-md-12 ui-lg-12">
+
+
+                        <span style="font-size: 18px">
+                            Periodo Vigente: 
+                        </span>
+                        <p:outputLabel style="font-size: 18px" value="#{distributivoController.periodo.titulo}"/>
+                    </div>
+
+                    <div class="ui-g-12 ui-md-12 ui-lg-12">
+                        <span style="font-size: 15px">
+                            Seleccione docente: 
+                        </span>
+                        <p:selectOneMenu value="#{distributivoController.idDocente}" >
+                            <f:selectItem itemValue="" itemLabel="Seleccione el docente" noSelectionOption="true"/>
+                            <f:selectItems value="#{distributivoController.docenteCombo}" var="doc" 
+                                           itemLabel="#{doc.cedula} - #{doc.nombre}" itemValue="#{doc.id}"/>
+                        </p:selectOneMenu>
+                        <p:commandButton value="Cargar materias asignadas" actionListener="#{distributivoController.cargarMaterias()}" 
+                                         update="lista comboDedicacion txtHoras txtHorasActividades txtHorasFaltantes :mensaje"/>
+                    </div>
+
+                    <br/>
+
+                    <div>
+                        <span style="font-size: 15px">
+                            Dedicación: 
+                        </span>
+                        <p:selectOneMenu id="comboDedicacion" value="#{distributivoController.idDedicacion}">
+                            <f:selectItems value="#{distributivoController.dedicacionCombo}" var="ded" 
+                                           itemLabel="#{ded.nombre} - Max: #{ded.horasMax} Min: #{ded.horasMin}" itemValue="#{ded.id}"/>
+                        </p:selectOneMenu>
+                        <br/>
+                        <p:outputLabel value="Horas de docencia "/>
+                        <p:outputLabel id="txtHoras" value="#{distributivoController.numeroHoras}"/>
+                        <br/>
+                        <p:outputLabel value="Horas de actividades "/>
+                        <p:outputLabel id="txtHorasActividades" value="#{distributivoController.numHorasActividades}"/>
+                        <br/>
+                        <p:outputLabel value="Horas faltantes "/>
+                        <p:outputLabel id="txtHorasFaltantes" value="#{distributivoController.numHorasFaltantes}"/>
+                        <br/>
+                        <p:commandButton value="Nueva Asignacion" actionListener="#{distributivoController.mostrarDialogo()}" update=":frmPrincipal:frmDialogo :mensaje"/>
+                    </div>
+
+                    <p:dataTable id="lista"  value="#{distributivoController.listaMateriasAsignadas}" 
+                                 var="item" style="font-size: 12px" >
+
+                        <p:column headerText="Curso" style="font-size: 90%" >
+                            <h:outputText value="#{item.curso} #{item.paralelo}"/>
+                        </p:column>
+                        <p:column headerText="Materia" style="font-size: 90%" >
+                            <h:outputText value="#{item.materia}"/>
+                        </p:column>
+                        <p:column headerText="Observación" style="font-size: 90%" >
+                            <h:outputText value="#{item.observaciones}"/>
+                        </p:column>
+                        <p:column headerText="Horas" style="font-size: 90%"  >
+                            <h:outputText value="#{item.numHoras}"   />
+                        </p:column>
+                        <p:column headerText="Estado" style="font-size: 90%" >
+                            <h:outputText value="#{item.estado eq 'A'?'ACTIVO':'INACTIVO'}"/>
+                        </p:column>
+
+                        <p:column headerText="Eliminar" style="font-size: 90%" >
+                            <p:commandButton icon="ui-icon-circle-close" actionListener="#{distributivoController.eliminar(item)}"
+                                             update=":frmPrincipal:formDatos:lista :frmPrincipal:formDatos:txtHoras :frmPrincipal:formDatos:txtHorasActividades :frmPrincipal:formDatos:txtHorasFaltantes :mensaje">
+                                <p:confirm header="Confirmación" message="Esta seguro que desea eliminar el registro?" icon="ui-icon-alert" />
+                            </p:commandButton>
+
+                        </p:column>
+                    </p:dataTable>
+
+                </h:form>
+
+                <p:dialog id="dialogo" widgetVar="wdialogo" header="Nuevo Registro" resizable="false" closeOnEscape="false" modal="true" width="500px">  
+                    <h:form id="frmDialogo">
+                        <h:panelGrid columns="1">  
+                            <h:panelGrid  columns="2" >
+                                <p:outputLabel value="Seleccione Curso" style="font-weight: bold; font-size: 12px"/>
+                                <h:panelGroup>
+                                    <p:selectOneMenu value="#{distributivoController.idCurso}" style="width:150px">
+                                        <p:ajax listener="#{distributivoController.cargarCurso()}" update="paralelo materia"/>
+                                        <f:selectItem itemValue="" itemLabel="Seleccione curso" noSelectionOption="true"/> 
+                                        <f:selectItems value="#{distributivoController.cursoCombo}" var="cur" itemLabel="#{cur.nombre}" 
+                                                       itemValue="#{cur.idCurso}"/>
+                                    </p:selectOneMenu>
+                                </h:panelGroup>
+
+                                <p:outputLabel value="Seleccione paralelo" style="font-weight: bold; font-size: 12px"/>
+                                <h:panelGroup>
+                                    <p:selectOneMenu id="paralelo" value="#{distributivoController.idParalelo}" style="width:150px">
+                                        <p:ajax listener="#{distributivoController.cargarMateriasCombo()}" update="materia"/>
+                                        <f:selectItem itemValue="" itemLabel="Seleccione Paralelo" noSelectionOption="true"/> 
+                                        <f:selectItems value="#{distributivoController.paraleloCombo}" var="par" itemLabel="#{par.paralelo.nombre}" 
+                                                       itemValue="#{par.idCursoParalelo}"/>
+                                    </p:selectOneMenu>
+                                </h:panelGroup>
+
+
+                                <p:outputLabel value="Materias del curso" style="font-weight: bold; font-size: 12px"/>
+                                <h:panelGroup >
+                                    <p:selectOneMenu id="materia" value="#{distributivoController.idMateria}" >
+                                        <p:ajax listener="#{distributivoController.idMateria}" />
+                                        <f:selectItem itemValue="" itemLabel="Seleccione Materia" noSelectionOption="true"/> 
+                                        <f:selectItems value="#{distributivoController.materiaCombo}" var="mat" 
+                                                       itemLabel="#{mat.materia} - Horas: #{mat.horas}" itemValue="#{mat.idMateria}"/>
+                                    </p:selectOneMenu>
+
+                                </h:panelGroup>
+                            </h:panelGrid>
+
+                            <br/>
+                            <br/>
+
+                            <h:panelGrid  columns="2" cellpadding="2" cellspacing="2">
+                                <p:outputLabel value="Observaciones: "/>
+                                <p:inputTextarea value="#{distributivoController.observaciones}">
+                                    <p:ajax listener="#{distributivoController.observaciones}"/>
+                                </p:inputTextarea>
+                            </h:panelGrid>
+                            <h:panelGrid  columns="2">
+                                <p:commandButton value="Registrar" 
+                                                 update=":frmPrincipal:formDatos:lista :frmPrincipal:formDatos:txtHoras :frmPrincipal:formDatos:txtHorasActividades :frmPrincipal:formDatos:txtHorasFaltantes :mensaje" icon="ui-icon-check" >
+                                    <p:ajax event="click" listener="#{distributivoController.grabarAsignacion()}" />
+                                </p:commandButton>  
+                                <p:commandButton value="Salir" icon="ui-icon-close" immediate="true" onclick="PF('wdialogo').hide();"/>
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </h:form>
+                </p:dialog>
+
+            </div>
+        </div>
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+            <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+        </p:confirmDialog>
+    </h:form>
+
+</ui:composition>

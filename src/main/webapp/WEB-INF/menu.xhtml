@@ -1,0 +1,49 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pu="http://primefaces.org/ultima"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+	<h:form id="menu-form">
+		<p:remoteCommand action="#{loginBean.logout()}" name="logout"
+			id="logout" />
+                <p:remoteCommand actionListener="#{adminBean.changePage('/module/security/usuario/miperfil.xhtml')}" update=":pages" name="perfil" 
+			id="perfil" />
+		<div class="layout-menu #{guestPreferences.menuClass}">
+			<div class="nano">
+				<div class="nano-content menu-scroll-content">
+					<ui:fragment
+						rendered="#{guestPreferences.profileMode == 'inline' and guestPreferences.menuLayout != 'menu-layout-static menu-layout-horizontal'}">
+
+						<div class="profile">
+							<div>
+								<img jsf:id="foto"
+									src="#{request.contextPath}/externalresources/?obj=#{adminBean.usuario.foto}"
+									style="text-align: center; width: 70px; height: 70px; border-radius: 100%; cursor: pointer" />
+							</div>
+							<a id="profile-options" href="#"> <span class="profile-name">#{adminBean.usuario.nombreApellido}</span>
+								<i class="material-icons">&#xE313;</i>
+							</a>
+						</div>
+
+						<ul id="profile-menu" class="ultima-menu">
+							<li role="menuitem"><a
+                                                                href="#" onclick="perfil();"
+								class="ripplelink"> <i class="material-icons">&#xE7FD;</i> <span>Perfil</span>
+							</a></li>
+							<li role="menuitem"><a href="#" onclick="logout();"
+								class="ripplelink"> <i class="material-icons">&#xE8AC;</i> <span>Cerrar
+										Sesión</span>
+							</a></li>
+						</ul>
+					</ui:fragment>
+					<pu:menu widgetVar="me" model="#{adminBean.modelMenu}">
+                                            
+					</pu:menu>
+				</div>
+			</div>
+		</div>
+	</h:form>
+</ui:composition>

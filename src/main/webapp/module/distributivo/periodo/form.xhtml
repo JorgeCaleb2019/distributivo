@@ -1,0 +1,63 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:jsf="http://xmlns.jcp.org/jsf"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <div class="ui-g-12 ui-md-12 ui-lg-12"><span style="font-size: 18px">#{periodoController.title}</span></div>
+    <div class="ui-g-12 ui-md-12 ui-lg-12">
+        <p:commandButton value="#{periodoController.persistence.name()}"  id="accion"
+                         rendered="#{not empty periodoController.persistence.name()}"
+                         update=":mensaje :formDatos" styleClass="btn btn-danger"
+                         actionListener="#{periodoController.executeAction(evt)}">
+            <p:confirm header="Confirmación de #{periodoController.persistence.name()}" message="Esta seguro que desea realizar esta Acción" icon="ui-icon-alert" />
+        </p:commandButton> 
+        <p:spacer width="5"/>
+        <p:splitButton value="Acciones" styleClass="blue-grey-btn" rendered="#{periodoController.typeOfView eq 'view'}">
+            <p:menuitem value="Modificar" icon="ui-icon-pencil" actionListener="#{periodoController.changeView('edit','')}" update=":formDatos"/>
+            <p:menuitem value="Eliminar" icon="ui-icon-close" actionListener="#{periodoController.changeView('delete','')}" update=":formDatos"/>
+        </p:splitButton>
+        <p:spacer width="5"/>
+        <p:commandButton value="Atrás"  actionListener="#{periodoController.changeView('list','')}" 
+                         update=":formDatos" immediate="true" styleClass="teal-btn"/>
+        <br/>
+        <br/>
+        <hr/>
+        <div class="ui-g-12 ui-md-12 ui-lg-12">
+            <div class="card">
+                <p:panelGrid id="datos_docente" columns="2" layout="grid">
+                    <h:panelGroup styleClass="md-inputfield">
+                        <p:inputText id="titulo" value="#{periodoController.entidad.titulo}" required="true" requiredMessage="El Titulo es requerido"
+                                     readonly="#{periodoController.typeOfView eq 'view' or periodoController.typeOfView eq 'delete' }"/>
+                        <p:outputLabel value="Titulo" for="titulo" />
+                    </h:panelGroup>
+
+                    <h:panelGroup styleClass="md-inputfield">
+                        <p:calendar id="feini" value="#{periodoController.entidad.fechaInicio}" 
+                                    required="true" requiredMessage="La fecha de inicio es Requerida"
+                                    readonly="#{periodoController.typeOfView eq 'view' or periodoController.typeOfView eq 'delete' or periodoController.typeOfView eq 'create'}" navigator="true"/>              
+                        <p:outputLabel value="Fecha Inicio" for="feini" />
+                    </h:panelGroup>
+
+                    <h:panelGroup styleClass="md-inputfield">
+                        <p:calendar id="fefin" value="#{periodoController.entidad.fechaFinal}"
+                                    required="true" requiredMessage="La fecha de fin es Requerida"
+                                    readonly="#{periodoController.typeOfView eq 'view' or periodoController.typeOfView eq 'delete'}" navigator="true"/>
+                        <p:outputLabel value="Fecha Final" for="fefin" /> 
+                    </h:panelGroup>
+
+                   <h:panelGroup>
+                        <label>Estado</label>
+                        <br/>
+                        <p:selectOneMenu id="estado"  value="#{periodoController.entidad.estado}"
+                                         disabled="#{periodoController.typeOfView eq 'view' or cursoController.typeOfView eq 'delete'}">
+                            <f:selectItem itemLabel="ACTIVO" itemValue="ACTIVO"/>
+                            <f:selectItem itemLabel="INACTIVO" itemValue="INACTIVO"/>
+                        </p:selectOneMenu>
+                    </h:panelGroup>
+                </p:panelGrid>
+            </div>
+        </div>    
+    </div>  
+</ui:composition>

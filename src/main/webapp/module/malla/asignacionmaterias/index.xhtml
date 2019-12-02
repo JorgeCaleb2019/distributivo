@@ -1,0 +1,161 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:jsf="http://xmlns.jcp.org/jsf"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <script type="application/javascript">
+            function mensajear(msg){
+            alert(msg);
+            return;
+            }
+        </script>
+    </h:head>
+
+    <h:form id="frmPrincipal">
+        <p:growl id="msgs" showDetail="true"/>
+        <div class="card docs">
+            <div class="ui-g">
+                <h:form id="formDatos">
+                    <div class="ui-g-12 ui-md-12 ui-lg-12"><span style="font-size: 18px">Asignacion de materias</span></div>
+                    <div class="ui-g-2 ui-md-4 ui-lg-6">
+                        <h:panelGroup styleClass="md-inputfield">
+                            <p:selectOneMenu value="#{asignacionMateriasController.idMalla}" class="form-control">
+                                <f:selectItem itemValue="" itemLabel="Seleccione Malla" noSelectionOption="true"/> 
+                                <f:selectItems value="#{asignacionMateriasController.mallaCombo}" var="mall" 
+                                               itemLabel="#{mall.descripcion}" itemValue="#{mall.idMalla}"/>
+                            </p:selectOneMenu>
+                            <p:commandButton value="Cargar" actionListener="#{asignacionMateriasController.cargarMalla()}" update=":frmPrincipal:msgs :frmPrincipal:formDatos:lista"/>
+                        </h:panelGroup>
+                    </div>
+
+                    <p:commandButton value="Agregar Materias" icon="ui-icon-plusthick" actionListener="#{asignacionMateriasController.mostrarDialogo()}" 
+                                     update=":frmPrincipal:msgs :frmPrincipal:formDatos:lista :frmPrincipal:dialogo"/>
+
+                    <br/>
+                    <br/>
+                    <br/>
+
+                    <div class="ui-g-12 ui-md-12 ui-lg-12">
+                        <div class="card">            
+                            <p:dataTable  id="lista" var="item" value="#{asignacionMateriasController.listaMallas}" sortBy="#{item.curso.idCurso}" expandableRowGroups="true" editable="true" >
+
+                                <p:ajax event="rowEdit" listener="#{asignacionMateriasController.onRowEdit}" update=":mensaje :frmPrincipal:formDatos:lista"  />
+                                <p:ajax event="rowEditCancel" listener="#{asignacionMateriasController.onRowCancel}" update=":frmPrincipal:msgs :frmPrincipal:formDatos:lista"  />
+
+                                <p:headerRow>
+                                    <p:column colspan="4">
+                                        <h:outputText value="#{item.curso.nombre}" />
+                                    </p:column>
+                                </p:headerRow>
+                                <p:column headerText="idmalla" style="font-size: 100%" visible="false">
+                                    <h:outputText value="#{item.idDetalle}"/>
+                                </p:column>    
+                                <p:column headerText="Materia" style="font-size: 100%">
+                                    <h:outputText value="#{item.materia.nombre}"/>
+                                </p:column>
+
+                                <p:column headerText="Horas" style="width:200px">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{item.numHoras}" style="width:100%"/> </f:facet>
+                                        <f:facet name="input"><h:inputText value="#{item.numHoras}" style="width:100%" /> </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+
+                                <p:column headerText="Estado" style="font-size: 100%">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{item.estado eq 'ACTIVO'?'ACTIVO':'INACTIVO'}" /></f:facet>
+                                        <f:facet name="input">
+                                            <h:selectOneMenu value="#{item.estado}" style="width:100%">
+                                                <f:selectItem itemLabel="ACTIVO" itemValue="ACTIVO"/>
+                                                <f:selectItem itemLabel="INACTIVO" itemValue="INACTIVO"/>
+                                            </h:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Options" style="width:50px">
+                                    <p:rowEditor />
+                                </p:column>
+                                <ui:remove>
+                                    <p:summaryRow>
+                                        <p:column  style="text-align:right">
+                                            <h:outputText value="Total:" />
+                                        </p:column>
+                                        <p:column>
+                                            <h:outputText value="#{dtRowGroupView.randomPrice}">
+                                                <f:convertNumber type="currency" currencySymbol="$" />
+                                            </h:outputText>
+                                        </p:column>
+                                    </p:summaryRow>
+                                </ui:remove>
+                            </p:dataTable>
+                        </div>
+                    </div>    
+
+                </h:form>
+
+                <p:dialog id="dialogo" widgetVar="wdialogo" header="Nuevo Registro" width="500px" resizable="false" closeOnEscape="false" modal="true">  
+                    <h:form id="frmDialogo">
+                        <p:growl id="msgs2" showDetail="true"/>
+                        <h:panelGrid columns="1">  
+                            <h:panelGrid  columns="2" >
+                                <p:outputLabel value="Seleccione Curso" style="font-weight: bold; font-size: 12px"/>
+                                <h:panelGroup>
+                                    <p:selectOneMenu value="#{asignacionMateriasController.idCurso}" filter="true" >
+                                        <p:ajax listener="#{asignacionMateriasController.cargarMaterias()}" update="cboMateria"/>
+                                        <f:selectItem itemValue="" itemLabel="Seleccione Curso" noSelectionOption="true" /> 
+                                        <f:selectItems value="#{asignacionMateriasController.cursoCombo}" var="cur" itemLabel="#{cur.nombre}" 
+                                                       itemValue="#{cur.idCurso}"/>
+                                    </p:selectOneMenu>
+                                </h:panelGroup>
+                                <p:outputLabel value="Seleccione Materia" style="font-weight: bold; font-size: 12px"/>
+                                <h:panelGroup >
+                                    <p:selectOneMenu id="cboMateria" value="#{asignacionMateriasController.idMateria}" filter="true" required="true">
+                                        <p:ajax listener="#{asignacionMateriasController.idMateria}"/>
+                                        <f:selectItem itemValue="" itemLabel="Seleccione Materia" noSelectionOption="true"/> 
+                                        <f:selectItems value="#{asignacionMateriasController.materiaCombo}" var="mat" itemLabel="#{mat.nombre}" itemValue="#{mat.id}"/>
+                                    </p:selectOneMenu>
+                                </h:panelGroup>
+                            </h:panelGrid>
+
+                            <br/>
+                            <br/>
+
+                            <h:panelGrid  columns="2" cellpadding="2" cellspacing="2" styleClass="ui-grid">
+                                <p:outputLabel value="Numero de Horas: " rendered="true"/>
+
+                                <p:inputMask id="numeroHor" mask="9?9" slotChar="" value="#{asignacionMateriasController.numHoras}" rendered="true" maxlength="2">
+                                    <p:ajax listener="#{asignacionMateriasController.numHoras}"/>
+                                    <p:ajax event="blur"  listener="#{asignacionMateriasController.validarNumero()}" update=":mensaje numeroHor"/>
+                                </p:inputMask>
+
+                                <p:outputLabel value="Observaciones: "/>
+                                <p:inputTextarea value="#{asignacionMateriasController.observaciones}">
+                                    <p:ajax listener="#{asignacionMateriasController.observaciones}"/>
+                                </p:inputTextarea>
+                            </h:panelGrid>
+                            <h:panelGrid  columns="2">
+                                <p:commandButton value="Registrar" validateClient="true" update=":frmPrincipal:msgs :frmPrincipal:formDatos:lista " 
+                                                 icon="ui-icon-check" actionListener="#{asignacionMateriasController.registrarAsignacion()}">
+                                    <p:ajax event="click" listener="#{asignacionMateriasController.registrarAsignacion()}"/>
+                                    
+                                </p:commandButton>  
+                                <p:commandButton value="Salir" icon="ui-icon-close" immediate="true" onclick="PF('wdialogo').hide();"/>
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </h:form>
+                </p:dialog>
+
+            </div>
+        </div>
+
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+            <p:commandButton value="SI" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+            <p:commandButton value="NO" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+        </p:confirmDialog>
+    </h:form>
+
+</ui:composition>

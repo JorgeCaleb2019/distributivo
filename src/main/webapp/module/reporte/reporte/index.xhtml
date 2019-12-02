@@ -1,0 +1,173 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:jsf="http://xmlns.jcp.org/jsf"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <script type="application/javascript">
+            function mensajear(msg){
+            alert(msg);
+            return;
+            }
+
+        </script>
+    </h:head>
+    <h:form id="frmPrincipal">
+        <p:growl id="msgs" showDetail="true"/>
+        <div class="card docs">
+            <div class="ui-g">
+                <h:form id="formDatos" >
+                    <div class="ui-g-12 ui-md-12 ui-lg-12" style="text-align: center;font-size: 18px;font-family: Arial;">Reportes</div>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <div class="ui-g-2 ui-md-4 ui-lg-6" style="text-align: center;">
+                        <div class="ui-g-12 ui-md-12 ui-lg-12" style="text-align: center;font-size: 18px;font-family: Arial;">
+                            Listado de docentes por periodo lectivo
+                        </div>
+                        <br/>
+                        <p:selectOneMenu value="#{reporteController.idPeriodo}" class="form-control" filter="true" >
+                            <f:selectItems value="#{reporteController.periodoCombo}" var="per" 
+                                           itemLabel="#{per.titulo} - #{per.estadoDistributivo}" itemValue="#{per.id}"/>
+                        </p:selectOneMenu>
+                        <br/>
+                        <p:commandButton value="Descargar informe" actionListener="#{reporteController.descargarReporteDocente()}" onclick="PrimeFaces.monitorDownload(start, stop);">
+                            <p:fileDownload value="#{reporteController.descarga}" />
+                        </p:commandButton>
+                    </div>
+
+                    <div class="ui-g-2 ui-md-4 ui-lg-6" style="text-align: center;">
+                        <div class="ui-g-12 ui-md-12 ui-lg-12" style="text-align: center;font-size: 18px;font-family: Arial;">
+                            Malla curricular
+                        </div>
+                        <p:selectOneMenu value="#{reporteController.idMalla}" class="form-control" filter="true">
+                            <f:selectItem itemValue="" itemLabel="Seleccione Malla" noSelectionOption="true"/> 
+                            <f:selectItems value="#{reporteController.mallaCombo}" var="mall" 
+                                           itemLabel="#{mall.descripcion}" itemValue="#{mall.idMalla}"/>
+                        </p:selectOneMenu>
+                        <br/>
+                        <p:commandButton value="Descargar informe" actionListener="#{reporteController.descargarReporteMalla()}" onclick="PrimeFaces.monitorDownload(start, stop);">
+                            <p:fileDownload value="#{reporteController.descarga}" />
+                        </p:commandButton>
+                    </div>
+
+                    <div class="ui-g-2 ui-md-4 ui-lg-6" style="text-align: center;">
+                        <div class="ui-g-12 ui-md-12 ui-lg-12" style="text-align: center;font-size: 18px;font-family: Arial;">
+                            Distributivo de carga horaria docente
+                        </div>
+                        <p:selectOneMenu value="#{reporteController.idPeriodoCargaHoraria}" class="form-control" filter="true">
+                            <f:selectItem itemValue="" itemLabel="Seleccione Periodo" noSelectionOption="true"/> 
+                            <f:selectItems value="#{reporteController.periodoCombo}" var="mall" 
+                                           itemLabel="#{mall.titulo} - #{mall.estadoDistributivo}" itemValue="#{mall.id}"/>
+                        </p:selectOneMenu>
+                        <br/>
+                        <p:commandButton value="Descargar informe" actionListener="#{reporteController.descargarReporteDistributivo()}" onclick="PrimeFaces.monitorDownload(start, stop);">
+                            <p:fileDownload value="#{reporteController.descarga}" />
+                        </p:commandButton>
+                    </div>
+
+
+                    <div class="ui-g-2 ui-md-4 ui-lg-6" style="text-align: center;">
+                        <div class="ui-g-12 ui-md-12 ui-lg-12" style="text-align: center;font-size: 18px;font-family: Arial;">
+                            Listado de Docentes por Actividad
+                        </div>
+                        <p:selectOneMenu value="#{reporteController.idPeriodoActividad}" class="form-control" filter="true">
+                            <p:ajax listener="#{reporteController.cargarDocentes()}" update="cboDocente"/>
+                            <f:selectItem itemValue="" itemLabel="Seleccione Periodo" noSelectionOption="true"/> 
+                            <f:selectItems value="#{reporteController.periodoCombo}" var="mall" 
+                                           itemLabel="#{mall.titulo}" itemValue="#{mall.id}"/>
+                        </p:selectOneMenu>
+                        <br/>
+                        <p:selectOneMenu id="cboDocente" value="#{reporteController.idDocenteActividad}" >
+                            <f:selectItem itemValue="" itemLabel="Seleccione el docente" noSelectionOption="true"/>
+                            <f:selectItems value="#{reporteController.docenteCombo}" var="doc" 
+                                           itemLabel="#{doc.cedula} - #{doc.nombre}" itemValue="#{doc.id}"/>
+                        </p:selectOneMenu>
+                        <br/>
+                        <p:commandButton value="Descargar informe" actionListener="#{reporteController.descargarReporteActividadesDocente()}" onclick="PrimeFaces.monitorDownload(start, stop);">
+                            <p:fileDownload value="#{reporteController.descarga}" />
+                        </p:commandButton>
+                    </div>
+
+
+                    <div class="ui-g-2 ui-md-4 ui-lg-6" style="text-align: center;">
+                        <div class="ui-g-12 ui-md-12 ui-lg-12" style="text-align: center;font-size: 18px;font-family: Arial;">
+                            Listado de Docentes por Periodo y Curso
+                        </div>
+                        <p:selectOneMenu value="#{reporteController.idPeriodoCurso}" class="form-control" filter="true">
+                            <f:selectItem itemValue="" itemLabel="Seleccione Periodo" noSelectionOption="true"/> 
+                            <f:selectItems value="#{reporteController.periodoCombo}" var="mall" 
+                                           itemLabel="#{mall.titulo}" itemValue="#{mall.id}"/>
+                        </p:selectOneMenu>
+                        <br/>
+                        <p:selectOneMenu value="#{reporteController.idCurso}" style="width:150px">
+                            <f:selectItem itemValue="" itemLabel="Seleccione Curso" noSelectionOption="true"/> 
+                            <f:selectItems value="#{reporteController.cursoCombo}" var="cur" itemLabel="#{cur.nombre}" 
+                                           itemValue="#{cur.idCurso}"/>
+                        </p:selectOneMenu>
+
+                        <br/>
+                        <p:commandButton value="Descargar informe" actionListener="#{reporteController.descargarDistributivoCurso()}" onclick="PrimeFaces.monitorDownload(start, stop);">
+                            <p:fileDownload value="#{reporteController.descarga}" />
+                        </p:commandButton>
+                    </div>
+
+
+
+
+                    <div class="ui-g-2 ui-md-4 ui-lg-6" style="text-align: center;">
+                        <div class="ui-g-12 ui-md-12 ui-lg-12" style="text-align: center;font-size: 18px;font-family: Arial;">
+                            Listado de Docentes por Periodo y Curso - Paralelo
+                        </div>
+                        <p:selectOneMenu value="#{reporteController.idPeriodoCursoParalelo}" class="form-control" filter="true">
+                            <f:selectItem itemValue="" itemLabel="Seleccione Periodo" noSelectionOption="true"/> 
+                            <f:selectItems value="#{reporteController.periodoCombo}" var="mall" 
+                                           itemLabel="#{mall.titulo}" itemValue="#{mall.id}"/>
+                        </p:selectOneMenu>
+                        <br/>
+                        <p:selectOneMenu value="#{reporteController.idCursoParalelo}" style="width:150px">
+                            <p:ajax listener="#{reporteController.cargarCurso()}" update="paralelo"/>
+                            <f:selectItem itemValue="" itemLabel="Seleccione Curso" noSelectionOption="true"/> 
+                            <f:selectItems value="#{reporteController.cursoCombo}" var="cur" itemLabel="#{cur.nombre}" 
+                                           itemValue="#{cur.idCurso}"/>
+                        </p:selectOneMenu>
+                        <br />
+                        <p:selectOneMenu id="paralelo" value="#{reporteController.idParalelo}" style="width:150px">
+                            <f:selectItem itemValue="" itemLabel="Seleccione Paralelo" noSelectionOption="true"/> 
+                            <f:selectItems value="#{reporteController.paraleloCombo}" var="par" itemLabel="#{par.paralelo.nombre}" 
+                                           itemValue="#{par.idCursoParalelo}"/>
+                        </p:selectOneMenu>
+                        <br/>
+                        <p:commandButton value="Descargar informe" actionListener="#{reporteController.descargarDistributivoCursoParalelo()}" onclick="PrimeFaces.monitorDownload(start, stop);">
+                            <p:fileDownload value="#{reporteController.descarga}" />
+                        </p:commandButton>
+                    </div>
+                    
+                    <div class="ui-g-2 ui-md-4 ui-lg-6" style="text-align: center;">
+                        <div class="ui-g-12 ui-md-12 ui-lg-12" style="text-align: center;font-size: 18px;font-family: Arial;">
+                            Listado de docentes por actividad
+                        </div>
+                        <br/>
+                        <p:selectOneMenu value="#{reporteController.idPeriodoDocenteActividad}" class="form-control" filter="true" >
+                            <f:selectItems value="#{reporteController.periodoCombo}" var="per" 
+                                           itemLabel="#{per.titulo} - #{per.estadoDistributivo}" itemValue="#{per.id}"/>
+                        </p:selectOneMenu>
+                        <br/>
+                        <p:commandButton value="Descargar informe" actionListener="#{reporteController.descargarDocenteActividad()}" onclick="PrimeFaces.monitorDownload(start, stop);">
+                            <p:fileDownload value="#{reporteController.descarga}" />
+                        </p:commandButton>
+                    </div>
+
+                </h:form>
+            </div>
+        </div>
+
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+            <p:commandButton value="SI" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+            <p:commandButton value="NO" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+        </p:confirmDialog>
+    </h:form>
+
+</ui:composition>

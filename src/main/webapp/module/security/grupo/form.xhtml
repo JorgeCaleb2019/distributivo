@@ -1,0 +1,46 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core" >
+
+    <div class="ui-g-12 ui-md-12 ui-lg-12"><span style="font-size: 18px">#{grupoBean.title}</span></div>
+    <div class="ui-g-12 ui-md-12 ui-lg-12">
+        <p:commandButton value="#{grupoBean.persistence.name()}"  id="accion"
+                         rendered="#{not empty grupoBean.persistence.name()}"
+                         update=":mensaje :formDatos" styleClass="btn btn-danger"
+                         actionListener="#{grupoBean.executeAction(evt)}">
+            <p:confirm header="Confirmación de #{grupoBean.persistence.name()}" message="Esta seguro que desea realizar esta Acción" icon="ui-icon-alert" />
+        </p:commandButton> 
+        <p:spacer width="5"/>
+        <p:splitButton value="Acciones" styleClass="blue-grey-btn" rendered="#{grupoBean.typeOfView eq 'view'}">
+            <p:menuitem value="Modificar" icon="ui-icon-pencil" actionListener="#{grupoBean.changeView('edit','')}" update=":formDatos"/>
+            <p:menuitem value="Eliminar" icon="ui-icon-close" actionListener="#{grupoBean.changeView('delete','')}" update=":formDatos"/>
+        </p:splitButton>
+        <p:spacer width="5"/>
+        <p:commandButton value="Atrás"  actionListener="#{grupoBean.changeView('list','')}" 
+                         update=":formDatos" immediate="true" styleClass="teal-btn"/>
+        <br/>
+        <br/>
+        <hr/>
+        <div class="ui-g-12 ui-md-12 ui-lg-12">
+            <div class="card">
+                <p:panel header="Información de Grupo">
+                    <h:panelGrid id="datos" cellpadding="5" cellspacing="5" columns="2" style="width: 100%;border: 0px!important;">  
+                        <p:outputLabel for="nom" value="Grupo"/>
+                        <p:inputText id="nom" placeholder="Grupo"  readonly="#{grupoBean.typeOfView eq 'view' or grupoBean.typeOfView eq 'delete'}"  value="#{grupoBean.entidad.nombreGrup}" required="true"/>
+                        <p:outputLabel for="des" value="Descripción"/>
+                        <p:inputTextarea id="des" placeholder="Descripción" readonly="#{grupoBean.typeOfView eq 'view' or grupoBean.typeOfView eq 'delete'}"  value="#{grupoBean.entidad.desripcionGrup}" style="width: 400px"/>
+                    
+                       <p:outputLabel value="Estado" for="estado" />
+                                <p:selectOneMenu id="estado"  value="#{grupoBean.entidad.estado}"
+                                         disabled="#{grupoBean.typeOfView eq 'view' or grupoBean.typeOfView eq 'delete' or grupoBean.typeOfView eq 'create'}">
+                                    <f:selectItem itemLabel="ACTIVO" itemValue="ACTIVO"/>
+                                    <f:selectItem itemLabel="INACTIVO" itemValue="INACTIVO"/>
+                                </p:selectOneMenu>
+                    </h:panelGrid> 
+                </p:panel>
+            </div>
+        </div>    
+    </div>  
+</ui:composition>

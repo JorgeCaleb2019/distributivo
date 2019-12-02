@@ -1,0 +1,40 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:jsf="http://xmlns.jcp.org/jsf"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <div class="ui-g-12 ui-md-12 ui-lg-12"><span style="font-size: 18px">#{modalidadController.title}</span></div>
+    <div class="ui-g-12 ui-md-12 ui-lg-12">
+        <p:commandButton value="#{modalidadController.persistence.name()}"  id="accion"
+                         rendered="#{not empty modalidadController.persistence.name()}"
+                         update=":mensaje :formDatos" styleClass="btn btn-danger"
+                         actionListener="#{modalidadController.executeAction(evt)}">
+            <p:confirm header="Confirmación de #{modalidadController.persistence.name()}" message="Esta seguro que desea realizar esta Acción" icon="ui-icon-alert" />
+        </p:commandButton> 
+        <p:spacer width="5"/>
+        <p:splitButton value="Acciones" styleClass="blue-grey-btn" rendered="#{modalidadController.typeOfView eq 'view'}">
+            <p:menuitem value="Modificar" icon="ui-icon-pencil" actionListener="#{modalidadController.changeView('edit','')}" update=":formDatos"/>
+            <p:menuitem value="Eliminar" icon="ui-icon-close" actionListener="#{modalidadController.changeView('delete','')}" update=":formDatos"/>
+        </p:splitButton>
+        <p:spacer width="5"/>
+        <p:commandButton value="Atrás"  actionListener="#{modalidadController.changeView('list','')}" 
+                         update=":formDatos" immediate="true" styleClass="teal-btn"/>
+        <br/>
+        <br/>
+        <hr/>
+        <div class="ui-g-12 ui-md-12 ui-lg-12">
+            <div class="card">
+                <p:panelGrid id="datos_docente" columns="2" layout="grid" style="border: 0px!important">
+                    <h:panelGroup styleClass="md-inputfield">
+                        <p:inputText id="nombre" value="#{modalidadController.entidad.nombre}" required="true" requiredMessage="El nombre es requerido"
+                                     readonly="#{modalidadController.typeOfView eq 'view' or modalidadController.typeOfView eq 'delete'}"/>
+                        <label>Modalidad</label>
+                    </h:panelGroup>
+
+                </p:panelGrid>
+            </div>
+        </div>    
+    </div>  
+</ui:composition>

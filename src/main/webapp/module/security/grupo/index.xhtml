@@ -1,0 +1,102 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+    <h:form id="formDatos">  
+        <p:remoteCommand actionListener="#{grupoBean.table.load()}" name="reloadTable"
+                         update="searchkeys,paginator,table"/>
+        <div class="card docs">
+            <div class="ui-g">
+                <div class="ui-g-12" jsf:rendered="#{grupoBean.typeOfView eq 'list'}">
+                    <div class="ui-g-2 ui-md-3 ui-lg-6"><span style="font-size: 18px">#{grupoBean.title}</span></div>
+                    <div class="ui-g-6 ui-md-9 ui-lg-6" >
+                        <div style="float: right;display: inline-block">
+                            <p:chips id="searchkeys" value="#{grupoBean.table.searchKeys}" 
+                                     style="width: 90%;"/>
+                            <span style="width: 10%;cursor: pointer" onclick="reloadTable()"><i onclick="" class="topbar-icon material-icons" ></i></span>   
+                        </div>
+                    </div>
+                    <div class="ui-g-2 ui-md-4 ui-lg-6">
+                        <p:commandButton value="Crear"  actionListener="#{grupoBean.changeView('create','')}" update=":formDatos"/>
+                    </div>
+
+                    <div class="ui-g-12 ui-md-12 ui-lg-6" style="text-align: right">
+                        <h:panelGrid columns="3" style="float: right;width: 50%" >
+                            <h:panelGroup layout="inline" id="paginator">
+                                <h:outputText value="#{grupoBean.table.paginator.rowFirst}-#{grupoBean.table.paginator.rows}"/>
+                                <h:outputText value=" / "/>
+                                <h:outputText value="#{grupoBean.table.paginator.totalRows}"/>
+                            </h:panelGroup>
+                            <h:panelGroup layout="inline">
+                                <p:commandButton icon="ui-icon-navigate-before" 
+                                                 actionListener="#{grupoBean.table.paginator.back()}"
+                                                 oncomplete="reloadTable();"/>
+                                <p:commandButton icon="ui-icon-navigate-next"
+                                                 oncomplete="reloadTable();"
+                                                 actionListener="#{grupoBean.table.paginator.next()}"/>
+                            </h:panelGroup>
+                            <h:panelGroup>
+                                <p:commandButton icon="ui-icon-dashboard" 
+                                                 actionListener="#{grupoBean.table.activeKanban()}"
+                                                 update="table"
+                                                 style="border-radius: 2px 2px 2px 2px!important"/>
+                                <p:commandButton icon="ui-icon-list" 
+                                                 actionListener="#{grupoBean.table.activeList()}"
+                                                 update="table"
+                                                 style="border-radius: 2px 2px 2px 2px!important"/>
+                            </h:panelGroup>
+                        </h:panelGrid>
+                    </div>
+                    <div class="ui-g-12 ui-md-12 ui-lg-12">
+                        <div jsf:id="table">
+                            <p:dataTable value="#{grupoBean.table.listItems}" var="item" 
+                                         rendered="#{grupoBean.table.table}" style="font-size: 12px"
+                                         selectionMode="single" selection="#{grupoBean.entidad}"
+                                         rowKey="#{item.codigoGrup}">
+
+                                <p:ajax event="rowSelect" listener="#{grupoBean.changeView('view','')}" update=":formDatos"/>
+
+                                <p:column headerText="Grupo" style="font-size: 90%" >
+                                    <h:outputText value="#{item.nombreGrup}"/>
+                                </p:column>
+                                <p:column headerText="Descripción" style="font-size: 90%">
+                                    <h:outputText value="#{item.desripcionGrup}"/>
+                                </p:column>
+                                <p:column headerText="Estado" style="font-size: 90%">
+                                    <h:outputText value="#{item.estado}"/>
+                                </p:column>
+
+                            </p:dataTable>
+                            <hr jsf:rendered="#{grupoBean.table.kanban}"/>
+                            <ui:repeat value="#{grupoBean.table.listItems}" var="item2" rendered="#{grupoBean.table.kanban}">
+                                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                                    <p:remoteCommand actionListener="#{grupoBean.changeView('view',item2.codigoGrup)}" update=":formDatos" name="item2#{item2.codigoGrup}"/>
+                                    <div class="card" style="line-height: 1!important;border: solid 1px #000000;height: 90px;font-size: 11px!important;cursor: pointer;min-width: 250px!important;margin-bottom: 1px"
+                                         onclick="item2#{item2.codigoGrup}()">
+                                        <h:panelGrid columns="2" style="margin-top: -10px;margin-left: -10px">
+                                            <h:panelGrid columns="1">
+                                                <span style="font-weight: bold;text-transform: uppercase">#{item2.nombreGrup}</span>
+                                                <p>Descripción : #{item2.desripcionGrup}</p>
+                                                <p>Estado: #{item2.estado}</p>
+                                            </h:panelGrid>
+                                        </h:panelGrid>
+                                    </div>
+                                </div>
+                            </ui:repeat>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui-g-12" jsf:rendered="#{not (grupoBean.typeOfView eq 'list')}">
+                    <ui:include src="form.xhtml"/>
+                </div>
+            </div>
+        </div>
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+            <p:commandButton value="SI" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+            <p:commandButton value="NO" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+        </p:confirmDialog>
+   </h:form> 
+
+</ui:composition>

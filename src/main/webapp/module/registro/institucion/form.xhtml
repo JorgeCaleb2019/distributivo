@@ -1,0 +1,94 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:jsf="http://xmlns.jcp.org/jsf"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <div class="ui-g-12 ui-md-12 ui-lg-12"><span style="font-size: 18px">#{institucionController.title}</span></div>
+    <div class="ui-g-12 ui-md-12 ui-lg-12">
+        <p:commandButton value="#{institucionController.persistence.name()}"  id="accion"
+                         rendered="#{not empty institucionController.persistence.name()}"
+                         update=":mensaje :formDatos" styleClass="btn btn-danger"
+                         actionListener="#{institucionController.executeAction(evt)}">
+            <p:confirm header="Confirmación de #{institucionController.persistence.name()}" message="Esta seguro que desea realizar esta Acción" icon="ui-icon-alert" />
+        </p:commandButton> 
+        <p:spacer width="5"/>
+        <p:splitButton value="Acciones" styleClass="blue-grey-btn" rendered="#{institucionController.typeOfView eq 'view'}">
+            <p:menuitem value="Modificar" icon="ui-icon-pencil" actionListener="#{institucionController.changeView('edit','')}" update=":formDatos"/>
+            <p:menuitem value="Eliminar" icon="ui-icon-close" actionListener="#{institucionController.changeView('delete','')}" update=":formDatos"/>
+        </p:splitButton>
+        <p:spacer width="5"/>
+        <p:commandButton value="Atrás"  actionListener="#{institucionController.changeView('list','')}" 
+                         update=":formDatos" immediate="true" styleClass="teal-btn"/>
+        <br/>
+        <br/>
+        <hr/>
+        <div class="ui-g-12 ui-md-12 ui-lg-12">
+            <div class="card">
+                <p:panelGrid id="datos_docente" columns="2" layout="grid" style="border: 0px!important">
+                    <h:panelGroup styleClass="md-inputfield">
+                        <p:inputText id="nombre" value="#{institucionController.entidad.nombre}" required="true" requiredMessage="El nombre es requerido"
+                                     readonly="#{institucionController.typeOfView eq 'view' or institucionController.typeOfView eq 'delete'}"/>
+                        <label>Institución</label>
+                    </h:panelGroup>
+
+                    <h:panelGroup styleClass="md-inputfield">
+                        <p:inputText id="rector" value="#{institucionController.entidad.rector}"
+                                     readonly="#{institucionController.typeOfView eq 'view' or institucionController.typeOfView eq 'delete'}"/>
+                        <label>Rector</label>
+                    </h:panelGroup>
+                    
+                    <h:panelGroup styleClass="md-inputfield">
+                          <p:inputText id="vicerector" value="#{institucionController.entidad.vicerector}"
+                                     readonly="#{institucionController.typeOfView eq 'view' or institucionController.typeOfView eq 'delete'}"/>
+                        <label>ViceRector</label>
+                    </h:panelGroup>
+
+                  
+                    <h:panelGroup styleClass="md-inputfield">
+                        <p:inputText id="web" value="#{institucionController.entidad.web}"
+                                     readonly="#{institucionController.typeOfView eq 'view' or institucionController.typeOfView eq 'delete'}"/>
+                        <label>Web</label>
+                    </h:panelGroup>
+
+                    <h:panelGroup styleClass="md-inputfield">
+                        <p:inputText id="telefono" value="#{institucionController.entidad.telefono}"
+                                     readonly="#{institucionController.typeOfView eq 'view' or institucionController.typeOfView eq 'delete'}"/>
+                        <label>Teléfono</label>
+                    </h:panelGroup>
+
+                    <h:panelGroup styleClass="md-inputfield">
+                        <p:inputText id="email" value="#{institucionController.entidad.email}"
+                                     readonly="#{institucionController.typeOfView eq 'view' or institucionController.typeOfView eq 'delete'}"/>
+                        <label>Email</label>
+                    </h:panelGroup>
+
+                    <h:panelGroup styleClass="md-inputfield">
+                        <p:inputTextarea id="direccion" value="#{institucionController.entidad.direccion}" rows="3"
+                                         readonly="#{institucionController.typeOfView eq 'view' or institucionController.typeOfView eq 'delete'}">
+                        </p:inputTextarea>       
+                        <label>Dirección</label>
+                    </h:panelGroup>
+                  
+                     <h:panelGroup>
+                        <label>Estado</label>
+                        <br/>
+                        <p:selectOneMenu id="estado"  value="#{institucionController.entidad.estado}"
+                                         disabled="#{institucionController.typeOfVdocenteControlleriew eq 'view' or institucionController.typeOfView eq 'delete' or institucionController.typeOfView eq 'create'}">
+                            <f:selectItem itemLabel="ACTIVO" itemValue="ACTIVO"/>
+                            <f:selectItem itemLabel="INACTIVO" itemValue="INACTIVO"/>
+                        </p:selectOneMenu>
+                    </h:panelGroup>
+                </p:panelGrid>
+
+                <p:panelGrid columns="1" layout="grid">
+                    <p:commandButton value="Cargar Logo" onclick="PF('dlgUploadLogo').show()"/>
+                    <p:outputPanel id="foto">
+                        <img src="#{request.contextPath}/externalresources/?obj=#{institucionController.entidad.logo}" class="imgCuadrada"/>
+                    </p:outputPanel>
+                </p:panelGrid>
+            </div>
+        </div>    
+    </div>  
+</ui:composition>

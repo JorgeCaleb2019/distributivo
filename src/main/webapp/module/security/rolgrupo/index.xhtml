@@ -1,0 +1,80 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:jsf="http://xmlns.jcp.org/jsf"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <h:form id="formPrincipal" styleClass="form-horizontal">
+        <p:remoteCommand actionListener="#{rolBean.table.load()}" name="reloadTable"
+                         update="listadoGrupo"/>
+        <p:remoteCommand actionListener="#{grupoBean.table.load()}" name="reloadTableGrupo"
+                         update="listadoPrivilegio"/>
+        <div class="widget-body">
+            <div class="widget-body">
+                <p:commandButton id="guardar" value="Guardar" 
+                                 actionListener="#{rolGrupoBean.guardar()}" 
+                                 update=":mensaje" styleClass="btn btn-danger"
+                                 style="width: 140px"
+                                 icon="fa fa-save">
+                    <p:confirm header="Confirmación" message="Esta seguro que desea Asignar los Grupos al Rol" icon="ui-icon-alert" />
+                </p:commandButton>
+                <p:tooltip for="guardar" value="Click para Asignar los Grupos a un Rol" position="bottom"/>
+                <br/>
+                <br/>
+                <h:panelGrid columns="2"   style="width:1200px;height: 500px ; align-items: center">  
+                <h:panelGrid columns="1"   style="width:100%;height: auto ; align-items: top;" >
+
+                        <p:dataTable id="listadoGrupo" emptyMessage="No se ha encontrado ningún Rol"  paginator="true"
+                                     paginatorPosition="top" var="obj" lazy="true" rowKey="#{obj.codigoRol}"
+                                     selectionMode="single" value="#{rolBean.table.listItems}"
+                                     selection="#{rolGrupoBean.rol}" style="height: 700px; width: 100%; border: 2px; background: #ffffff7a;">
+                            <f:facet name="header">
+                                Roles
+                            </f:facet>
+                            <p:ajax event="rowSelect" listener="#{rolGrupoBean.onRowSelectGrupo}"  update=":formPrincipal:listadoPrivilegio :mensaje" />
+
+                            <p:column headerText="Rol" style="font-size: 90%" filterBy="#{obj.nombreRol}">
+                                <h:outputText value="#{obj.nombreRol}"/>
+                            </p:column>
+                            <p:column headerText="Descripción" style="font-size: 90%" filterBy="#{obj.descripcionRol}">
+                                <h:outputText value="#{obj.descripcionRol}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </h:panelGrid>
+               
+                           
+                    
+                   
+                    <h:panelGrid columns="1"   style="width: 100%;height: 700px; align-items: center" >
+                        <p:dataTable id="listadoPrivilegio" emptyMessage="No se ha encontrado ningún Grupo"  paginator="true"
+                                     var="objGrupo" rowKey="#{objGrupo.codigoGrup}" style="height: 700px; width: 100%; border: 2px; background: #ffffff7a;"
+                                     value="#{grupoBean.table.listItems}" selection="#{rolGrupoBean.gruposList}" 
+                                     rows="20" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                                 rowsPerPageTemplate="20" >
+                            <f:facet name="header">
+                                Grupos Actuales
+                            </f:facet> 
+                            <p:ajax event="rowSelectCheckbox" listener="#{rolGrupoBean.onRowSelectPermiso}" />
+                            <p:ajax event="rowUnselectCheckbox" listener="#{rolGrupoBean.onRowUnselectPermiso}"/>
+
+                            <p:column selectionMode="multiple" style="width:50px;text-align:center" />
+
+                            <p:column headerText="Grupo" style="font-size: 90%" filterBy="#{objGrupo.nombreGrup}">
+                                <h:outputText value="#{objGrupo.nombreGrup}"/>
+                            </p:column>
+                            <p:column headerText="Descripción" style="font-size: 90%" filterBy="#{objGrupo.desripcionGrup}">
+                                <h:outputText value="#{objGrupo.desripcionGrup}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </h:panelGrid>
+                </h:panelGrid>
+            </div>
+        </div>
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+            <p:commandButton value="SI" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+            <p:commandButton value="NO" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+        </p:confirmDialog>
+    </h:form>
+
+</ui:composition>

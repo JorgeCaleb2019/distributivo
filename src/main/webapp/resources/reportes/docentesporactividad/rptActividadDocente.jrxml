@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ab3b814c-bfde-49e3-a417-3cec685b112d">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="INSTITUCION" class="java.lang.String"/>
+	<parameter name="PERIODO" class="java.lang.String"/>
+	<parameter name="ID_PERIODO" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select doc.cedula as cedula_docente,doc.nombre as docente,t.nombre as titularidad, ded.nombre as dedicacion,
+doc.codigo_senescyt, ta.actividad, a.horas, ta.id_tipo_actividad
+from distributivo_cabecera d, adicionales a, tipo_actividad ta,docente doc, titularidad t, dedicacion ded
+where d.estado = 'ACTIVO' and a.estado = 'ACTIVO' and d.estado = 'ACTIVO'
+and t.estado = 'ACTIVO' and ded.estado = 'ACTIVO' and d.id_dedicacion = ded.id and 
+d.id_docente = doc.id and doc.id_titularidad = t.id_titularidad and d.id_distributivo = a.id_distributivo
+and ta.id_tipo_actividad = a.id_tipo_actividad and d.id_periodo = $P{ID_PERIODO}
+
+union all
+
+select null as cedula_docente,null as docente,null as titularidad, null as dedicacion,
+null as codigo_senescyt, null as actividad, null as horas, null as id_tipo_actividad
+where  (select count(*)
+from distributivo_cabecera d, adicionales a, tipo_actividad ta,docente doc, titularidad t, dedicacion ded
+where d.estado = 'ACTIVO' and a.estado = 'ACTIVO' and d.estado = 'ACTIVO'
+and t.estado = 'ACTIVO' and ded.estado = 'ACTIVO' and d.id_dedicacion = ded.id and 
+d.id_docente = doc.id and doc.id_titularidad = t.id_titularidad and d.id_distributivo = a.id_distributivo
+and ta.id_tipo_actividad = a.id_tipo_actividad and d.id_periodo = $P{ID_PERIODO}) = 0]]>
+	</queryString>
+	<field name="cedula_docente" class="java.lang.String"/>
+	<field name="docente" class="java.lang.String"/>
+	<field name="titularidad" class="java.lang.String"/>
+	<field name="dedicacion" class="java.lang.String"/>
+	<field name="codigo_senescyt" class="java.lang.String"/>
+	<field name="actividad" class="java.lang.String"/>
+	<field name="horas" class="java.lang.Integer"/>
+	<field name="id_tipo_actividad" class="java.lang.Integer"/>
+	<group name="actividad">
+		<groupExpression><![CDATA[$F{id_tipo_actividad}]]></groupExpression>
+		<groupHeader>
+			<band height="33">
+				<textField isBlankWhenNull="true">
+					<reportElement x="103" y="3" width="261" height="14" uuid="4ccfcf11-ba69-4aa0-8b37-8bca858a7cb1"/>
+					<textElement>
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{actividad}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="3" y="3" width="100" height="14" uuid="e9ebaedb-c7cf-4a7e-8e23-43d72f12287b"/>
+					<textElement>
+						<font fontName="Calibri" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[ACTIVIDAD:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="3" y="19" width="65" height="14" uuid="ae3c291f-c409-4145-946b-c455f9349639"/>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[CÉDULA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="72" y="19" width="243" height="14" uuid="e2e0a2cd-7627-43aa-901d-f4552cdc5c2a"/>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[DOCENTE]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="319" y="19" width="80" height="14" uuid="d0d7fdbf-7928-42fc-bc78-ddf6bce47fbc"/>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[TITULARIDAD]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="404" y="19" width="77" height="14" uuid="8b60d11d-5623-4e0b-a154-dcd7e0f24179"/>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[DEDICACIÓN]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="485" y="19" width="50" height="14" uuid="2fad9c0e-b191-4685-bf78-19ff1dfa7623"/>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[HORAS]]></text>
+				</staticText>
+				<line>
+					<reportElement x="0" y="17" width="555" height="1" uuid="6d7da101-b669-4b0a-9dea-4cd8778f2e80"/>
+					<graphicElement>
+						<pen lineWidth="0.25"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="0" y="32" width="555" height="1" uuid="826ea513-9f2a-40fb-93e8-da07e1770e60"/>
+					<graphicElement>
+						<pen lineWidth="0.25"/>
+					</graphicElement>
+				</line>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="2"/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="69" splitType="Stretch">
+			<image scaleImage="FillFrame">
+				<reportElement x="3" y="1" width="65" height="42" uuid="65ddd6ef-c926-41a4-8bf5-31637231d9fd"/>
+				<imageExpression><![CDATA["\\logo_institucion.jpg"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="68" y="6" width="487" height="20" uuid="800ca604-64c9-4369-8576-b9cc86ec5686"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{INSTITUCION}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="68" y="26" width="487" height="20" uuid="d16de45d-f9e3-4af5-801e-8d6e8c794387"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DOCENTES POR ACTIVIDADES]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="68" y="46" width="487" height="20" uuid="6380ee0d-3b41-4484-90ba-dbde478d3f57"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{PERIODO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="9" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement x="3" y="0" width="65" height="14" uuid="92ec1814-b093-4c8a-8611-9c655d12bbd1"/>
+				<textElement>
+					<font fontName="Calibri" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cedula_docente}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="72" y="0" width="243" height="14" uuid="c35dd480-7e28-47f4-bcb5-be94ce58b236"/>
+				<textElement>
+					<font fontName="Calibri" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{docente}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="319" y="0" width="80" height="14" uuid="975cc238-0983-4a61-86e2-5c3709ee62d9"/>
+				<textElement>
+					<font fontName="Calibri" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{titularidad}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="404" y="0" width="77" height="14" uuid="1db53b38-cfbb-418f-b0f1-39fcc3e2986d"/>
+				<textElement>
+					<font fontName="Calibri" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dedicacion}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="485" y="0" width="50" height="14" uuid="e5a09427-0512-4ec6-aa1b-89ebbf399126"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{horas}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="14" width="555" height="1" uuid="ef5157c4-d327-4b98-a622-5941fef595cf"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="554" y="-14" width="1" height="29" uuid="b3e0e03d-b34e-480f-9594-2f310e18d4f3"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="482" y="-14" width="1" height="29" uuid="7f2f1b05-0aab-404b-942a-ab5dc8306e7b"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="401" y="-15" width="1" height="29" uuid="d0f96b23-b30d-4602-ad1e-70c829451384"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="316" y="-14" width="1" height="29" uuid="0827e760-3d05-4f04-bb2e-ff4702d44ea3"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="68" y="-14" width="1" height="29" uuid="0817eee1-a85f-43d4-8e4e-cee4c9f610ef"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="0" y="-16" width="1" height="29" uuid="c1e651e7-3c47-42d0-828b-db53bfde1a5d"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</line>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

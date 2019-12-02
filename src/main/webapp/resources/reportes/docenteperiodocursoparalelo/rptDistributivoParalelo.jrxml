@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="bf971129-84df-4813-8207-0c4b27410679">
+	<property name="ireport.zoom" value="1.2418426461183105"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="INSTITUCION" class="java.lang.String"/>
+	<parameter name="PERIODO" class="java.lang.String"/>
+	<parameter name="ID_PERIODO" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ID_CURSO" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ID_PARALELO" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select cab.id_cabecera_distributivo,cab.id_periodo,cab.id_docente,cab.cedula,cab.codigo_senescyt,cab.nombre_docente,
+cab.titularidad,cab.dedicacion,det.id_detalle_distributivo,det.paralelo,det.curso,det.materia,det.horas, det.id_curso,
+det.id_paralelo,
+(select case when sum(horas) is null then 0 else sum(horas) end as horas_adicionales
+from adicionales
+where estado = 'ACTIVO' and id_distributivo = cab.id_cabecera_distributivo) as horas_adicionales
+from (select d.id_distributivo as id_cabecera_distributivo,d.id_periodo,doc.id as id_docente,doc.cedula,doc.codigo_senescyt,
+doc.nombre as nombre_docente,t.nombre as titularidad,ded.nombre as dedicacion
+from distributivo_cabecera d, docente doc, titularidad t, dedicacion ded
+where d.estado = 'ACTIVO' and doc.estado = 'ACTIVO' and t.estado = 'ACTIVO'
+and ded.estado = 'ACTIVO' and d.id_docente = doc.id and doc.id_titularidad = t.id_titularidad
+and d.id_dedicacion = ded.id) cab,
+(select d.id_detalle as id_detalle_distributivo, d.id_distributivo as id_cabecera_distributivo, p.nombre as paralelo,
+c.nombre as curso, m.nombre as materia,md.num_horas as horas, 	C.id_curso, p.id_paralelo
+from distributivo_detalle d, paralelo p, curso c, materia m, malla_detalle md
+where d.estado = 'A' and p.estado = 'ACTIVO' and c.estado = 'ACTIVO' and m.estado = 'ACTIVO'
+and md.estado = 'ACTIVO' and d.id_paralelo = p.id_paralelo and d.id_curso = c.id_curso
+and d.id_materia = m.id and d.id_malla_detalle = md.id_detalle) det
+where cab.id_cabecera_distributivo = det.id_cabecera_distributivo and cab.id_periodo = $P{ID_PERIODO}
+and det.id_curso= $P{ID_CURSO}
+and det.id_paralelo= $P{ID_PARALELO}
+order by cab.nombre_docente asc]]>
+	</queryString>
+	<field name="id_cabecera_distributivo" class="java.lang.Integer"/>
+	<field name="id_periodo" class="java.lang.Long"/>
+	<field name="id_docente" class="java.lang.Integer"/>
+	<field name="cedula" class="java.lang.String"/>
+	<field name="codigo_senescyt" class="java.lang.String"/>
+	<field name="nombre_docente" class="java.lang.String"/>
+	<field name="titularidad" class="java.lang.String"/>
+	<field name="dedicacion" class="java.lang.String"/>
+	<field name="id_detalle_distributivo" class="java.lang.Integer"/>
+	<field name="paralelo" class="java.lang.String"/>
+	<field name="curso" class="java.lang.String"/>
+	<field name="materia" class="java.lang.String"/>
+	<field name="horas" class="java.lang.Integer"/>
+	<field name="id_curso" class="java.lang.Integer"/>
+	<field name="id_paralelo" class="java.lang.Integer"/>
+	<field name="horas_adicionales" class="java.lang.Long"/>
+	<variable name="horas_1" class="java.lang.Integer" resetType="Group" resetGroup="Docente" calculation="Sum">
+		<variableExpression><![CDATA[$F{horas}]]></variableExpression>
+	</variable>
+	<group name="Docente">
+		<groupExpression><![CDATA[$F{cedula}]]></groupExpression>
+		<groupHeader>
+			<band height="15">
+				<textField isBlankWhenNull="true">
+					<reportElement x="0" y="0" width="45" height="14" uuid="817c2fcd-5b9b-4fac-bd00-2f9891399233"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{cedula}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="49" y="0" width="196" height="14" uuid="71c1b597-2861-4096-abc6-40323cf95ed8"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Calibri" size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{nombre_docente}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement x="1" y="14" width="802" height="1" uuid="c0d65df9-7f5e-444f-aec5-461165f81904"/>
+					<graphicElement>
+						<pen lineWidth="0.25" lineStyle="Solid"/>
+					</graphicElement>
+				</line>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="28">
+				<textField isBlankWhenNull="true">
+					<reportElement x="753" y="0" width="49" height="14" uuid="afc65700-8a66-449b-8a69-9bbc0efa6468"/>
+					<textElement>
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{horas_1}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="754" y="14" width="49" height="14" uuid="f861f849-6e02-4059-af3a-cc24bde46f3d"/>
+					<textElement>
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{horas_adicionales}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="622" y="0" width="129" height="14" uuid="73eeccf2-3261-43b5-8aee-9f867cb1d83e"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Calibri" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[TOTAL HORAS DOCENCIA:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="622" y="14" width="129" height="14" uuid="7f77946f-a54c-4a01-91e4-323c3c9c4ad6"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Calibri" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[TOTAL HORAS ADICIONALES:]]></text>
+				</staticText>
+				<line>
+					<reportElement x="-1" y="27" width="802" height="1" uuid="9efd14f9-bf8b-46ed-a917-7daab9448969"/>
+					<graphicElement>
+						<pen lineWidth="0.25" lineStyle="Solid"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="506" y="0" width="1" height="28" uuid="d296cf8f-5ed9-4aa5-a51f-5d15542da188"/>
+					<graphicElement>
+						<pen lineWidth="0.25"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="802" y="0" width="1" height="28" uuid="db0f771d-c8e2-4af3-9768-fe59cc90dfe5"/>
+					<graphicElement>
+						<pen lineWidth="0.25"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="435" y="0" width="1" height="28" uuid="bd10d036-7bb3-4056-ac71-84a59e3d006e"/>
+					<graphicElement>
+						<pen lineWidth="0.25"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="325" y="0" width="1" height="28" uuid="dbaced24-9f9a-4bbe-a73f-46b89b53fad7"/>
+					<graphicElement>
+						<pen lineWidth="0.25"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="251" y="0" width="1" height="28" uuid="c51e0b08-d581-4cf5-8f06-7989e695e475"/>
+					<graphicElement>
+						<pen lineWidth="0.25"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="46" y="0" width="1" height="28" uuid="6acc4a4e-2aff-4825-8fda-ff14d5d9a1d1"/>
+					<graphicElement>
+						<pen lineWidth="0.25"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="-1" y="0" width="1" height="28" uuid="7f39cebc-6ac1-4714-a3a3-17e714ba00cb"/>
+					<graphicElement>
+						<pen lineWidth="0.25"/>
+					</graphicElement>
+				</line>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="65" splitType="Stretch">
+			<textField>
+				<reportElement x="96" y="0" width="706" height="20" uuid="3772c15d-b1cc-4e1b-a176-9641eac25291"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{INSTITUCION}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="96" y="20" width="706" height="20" uuid="b24e2fe3-eeb7-4321-b115-e4fd3eed28a7"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DISTRIBUTIVO DE CARGA HORARIA DOCENTE]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="170" y="40" width="161" height="20" uuid="2713edd4-ce17-4125-9f46-db9359b7e72b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{PERIODO}]]></textFieldExpression>
+			</textField>
+			<image scaleImage="FillFrame">
+				<reportElement x="0" y="0" width="96" height="60" uuid="6088717b-d68c-4ff4-be6c-d2016c548813"/>
+				<imageExpression><![CDATA["logo_institucion.jpg"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="412" y="40" width="100" height="20" uuid="3187207f-4dba-47ea-aa99-93b1d0531606"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="Calibri" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{curso}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="606" y="40" width="100" height="20" uuid="cf11d194-01da-46dd-a7f7-cc140b430da1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{paralelo}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="17" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="3" width="45" height="14" uuid="4ed2de2c-59bf-47ff-a7d5-7fb74e767219"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CÉDULA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="49" y="2" width="175" height="14" uuid="68ed1fee-e4a0-4c78-9dfe-558e48c305c9"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DOCENTE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="261" y="3" width="62" height="14" uuid="7a4eaade-3ddb-4dfd-b094-93d4494b27a6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TITULARIDAD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="329" y="3" width="100" height="14" uuid="228bdef5-ad5e-44bb-bf21-f2d28a89f14e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CURSO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="441" y="3" width="61" height="14" uuid="6a125f59-0419-4773-9bb0-cc5490d53097"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PARALELO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="724" y="3" width="75" height="14" uuid="42d298dc-6439-49d8-b2f2-bc53a9bcc05c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DEDICACIÓN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="665" y="3" width="45" height="14" uuid="dbabfd09-22d4-474f-af6c-b0d2cadfb235"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[HORAS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="515" y="3" width="144" height="14" uuid="02bb077c-f8ca-47c4-9f4d-d4846e759da6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MATERIA]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="16" width="802" height="1" uuid="7a6c760e-3c43-46b8-8c75-cd857bb994d5"/>
+				<graphicElement>
+					<pen lineWidth="0.25" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="0" y="3" width="802" height="1" uuid="9a228f6d-15c7-4361-9210-8e4978621194"/>
+				<graphicElement>
+					<pen lineWidth="0.25" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="251" y="3" width="1" height="14" uuid="740084c9-481d-44e3-9d7c-abdff21b0793"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="325" y="3" width="1" height="14" uuid="9b480196-390b-4e6e-b618-daf57d4a24f2"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="435" y="3" width="1" height="14" uuid="7acf4c5a-58b0-42ac-838a-a5eb65810a4a"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="506" y="3" width="1" height="14" uuid="2125411b-4532-4046-b290-78d0004d66c7"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="661" y="3" width="1" height="14" uuid="2d4f96f2-f92d-419e-a715-e78526d3caac"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="712" y="3" width="1" height="14" uuid="9a22111f-9fcf-433e-a8bd-b888159b46a9"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="801" y="3" width="1" height="14" uuid="8601bbdf-8e98-41ab-9601-606f82cc1457"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="46" y="3" width="1" height="14" uuid="bc8709da-7e6e-4fff-a4dc-5e2f58547f53"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="0" y="3" width="1" height="14" uuid="46e64dcc-2480-4055-8d92-21d642364013"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="14" width="802" height="1" uuid="79ba7216-496b-462e-a41f-fd4df115eebe"/>
+				<graphicElement>
+					<pen lineWidth="0.25" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<textField isBlankWhenNull="true">
+				<reportElement x="515" y="0" width="144" height="14" uuid="c4e91a1f-4463-44af-acf3-6a515610959d"/>
+				<textElement>
+					<font fontName="Calibri" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{materia}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="261" y="0" width="62" height="14" uuid="2547c0e6-cf2a-4c16-a242-423183daa28a"/>
+				<textElement>
+					<font fontName="Calibri" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{titularidad}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="328" y="0" width="100" height="14" uuid="991f5477-5cc3-4206-bbff-0d4e01179474"/>
+				<textElement>
+					<font fontName="Calibri" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{curso}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="441" y="0" width="61" height="14" uuid="78e74c7f-961f-4e07-ad90-19024b4a1a28"/>
+				<textElement>
+					<font fontName="Calibri" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{paralelo}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="665" y="0" width="45" height="14" uuid="9e999000-689b-49ca-8a30-f8c9089aa9b3"/>
+				<textElement>
+					<font fontName="Calibri" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{horas}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="714" y="0" width="88" height="14" uuid="53ca77c2-1b12-4c88-896b-b7fb271f0c7d"/>
+				<textElement>
+					<font fontName="Calibri" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dedicacion}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="46" y="-15" width="1" height="30" uuid="08a953c3-9e24-4e03-9fb1-63dddec3edf4"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="0" y="-15" width="1" height="30" uuid="3fc3c0f9-3b3b-4eed-9f69-16f4bb06eba0"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="251" y="-15" width="1" height="30" uuid="a1c1bc3f-d277-48ee-b29e-cedbcaef2cc0"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="325" y="-15" width="1" height="30" uuid="9d4bf15f-c0cc-4803-b5df-97664ea6065c"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="435" y="-15" width="1" height="30" uuid="61c79657-8fbb-4e8f-aed8-49a85398348d"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="506" y="-15" width="1" height="30" uuid="e5b1c36d-e3ee-4224-b221-5396483cb69a"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="662" y="-15" width="1" height="30" uuid="f6a2aad0-7ee0-401c-9cec-37381adb7734"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="712" y="-15" width="1" height="30" uuid="1a19559a-d220-40ae-a9a9-e5b219ac99df"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="802" y="-15" width="1" height="30" uuid="6acf7881-7d16-4071-84f8-060caffd67b8"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</line>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="56" splitType="Stretch"/>
+	</summary>
+</jasperReport>

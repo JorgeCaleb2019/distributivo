@@ -1,0 +1,121 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+    <h:form id="formDatos">  
+        <p:remoteCommand actionListener="#{usuarioBean.table.load()}" name="reloadTable"
+                         update="searchkeys,paginator,table"/>
+        <div class="card docs">
+            <div class="ui-g">
+                <div class="ui-g-12" jsf:rendered="#{usuarioBean.typeOfView eq 'list'}">
+                    <div class="ui-g-2 ui-md-3 ui-lg-6"><span style="font-size: 18px">#{usuarioBean.title}</span></div>
+                    <div class="ui-g-6 ui-md-9 ui-lg-6" >
+                        <div style="float: right;display: inline-block">
+                            <p:chips id="searchkeys" value="#{usuarioBean.table.searchKeys}" 
+                                     style="width: 90%;"/>
+                            <span style="width: 10%;cursor: pointer" onclick="reloadTable()"><i onclick="" class="topbar-icon material-icons" ></i></span>   
+                        </div>
+                    </div>
+                    <div class="ui-g-2 ui-md-4 ui-lg-6">
+                        <p:commandButton value="Crear"  actionListener="#{usuarioBean.changeView('create','')}" update=":formDatos"/>
+                    </div>
+
+                    <div class="ui-g-12 ui-md-12 ui-lg-6" style="text-align: right">
+                        <h:panelGrid columns="3" style="float: right;width: 50%" >
+                            <h:panelGroup layout="inline" id="paginator">
+                                <h:outputText value="#{usuarioBean.table.paginator.rowFirst}-#{usuarioBean.table.paginator.rows}"/>
+                                <h:outputText value=" / "/>
+                                <h:outputText value="#{usuarioBean.table.paginator.totalRows}"/>
+                            </h:panelGroup>
+                            <h:panelGroup layout="inline">
+                                <p:commandButton icon="ui-icon-navigate-before" 
+                                                 actionListener="#{usuarioBean.table.paginator.back()}"
+                                                 oncomplete="reloadTable();"/>
+                                <p:commandButton icon="ui-icon-navigate-next"
+                                                 oncomplete="reloadTable();"
+                                                 actionListener="#{usuarioBean.table.paginator.next()}"/>
+                            </h:panelGroup>
+                            <h:panelGroup>
+                                <p:commandButton icon="ui-icon-dashboard" 
+                                                 actionListener="#{usuarioBean.table.activeKanban()}"
+                                                 update="table"
+                                                 style="border-radius: 2px 2px 2px 2px!important"/>
+                                <p:commandButton icon="ui-icon-list" 
+                                                 actionListener="#{usuarioBean.table.activeList()}"
+                                                 update="table"
+                                                 style="border-radius: 2px 2px 2px 2px!important"/>
+                            </h:panelGroup>
+                        </h:panelGrid>
+                    </div>
+                    <div class="ui-g-12 ui-md-12 ui-lg-12">
+                        <div jsf:id="table">
+                            <p:dataTable value="#{usuarioBean.table.listItems}" var="item" 
+                                         rendered="#{usuarioBean.table.table}" style="font-size: 12px"
+                                         selectionMode="single" selection="#{usuarioBean.entidad}"
+                                         rowKey="#{item.codigoUsua}">
+
+                                <p:ajax event="rowSelect" listener="#{usuarioBean.changeView('view','')}" update=":formDatos"/>
+                                <p:column headerText="Usuario" style="font-size: 12px">
+                                    <h:outputText value="#{item.nickUsua}"/>
+                                </p:column>
+                                <p:column headerText="Nombres" style="font-size: 12px">
+                                    <h:outputText value="#{item.nombreCompleto}"/>
+                                </p:column>
+                                <p:column headerText="Email" style="font-size: 12px">
+                                    <h:outputText value="#{item.emailUsua}"/>
+                                </p:column>
+                                <p:column headerText="Estado" style="font-size: 12px">
+                                    <h:outputText value="#{item.estado}"/>
+                                </p:column>
+                            </p:dataTable>
+                            <hr jsf:rendered="#{usuarioBean.table.kanban}"/>
+                            <ui:repeat value="#{usuarioBean.table.listItems}" var="item2" rendered="#{usuarioBean.table.kanban}">
+                                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                                    <p:remoteCommand actionListener="#{usuarioBean.changeView('view',item2.codigoUsua)}" update=":formDatos" name="#{item2.nickUsua}"/>
+                                    <div class="card" style="line-height: 1!important;border: solid 1px #000000;height: 90px;font-size: 11px!important;cursor: pointer;min-width: 250px!important;margin-bottom: 1px"
+                                         onclick="#{item2.nickUsua}()">
+                                        <h:panelGrid columns="2" style="margin-top: -10px;margin-left: -10px">
+                                            <p:graphicImage  url="/externalresources/?obj=#{item2.foto}" style="width: 65px;height: 65px"/>
+                                            <h:panelGrid columns="1">
+                                                <span style="font-weight: bold;text-transform: uppercase">#{item2.nombreCompleto}</span>
+                                                <p>Email : #{item2.emailUsua}</p>
+                                                <p>Estado: #{item2.estado}</p>
+                                            </h:panelGrid>
+                                        </h:panelGrid>
+                                    </div>
+                                </div>
+                            </ui:repeat>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui-g-12" jsf:rendered="#{not (usuarioBean.typeOfView eq 'list')}">
+                    <ui:include src="form.xhtml"/>
+                </div>
+            </div>
+        </div>
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+            <p:commandButton value="SI" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+            <p:commandButton value="NO" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+        </p:confirmDialog>
+    </h:form>
+
+    <p:dialog id="dlgUpImage" rendered="#{usuarioBean.typeOfView ne
+                                          'view'}" widgetVar="dlgUpImage" width="650" height="300" header="Agregar Imagen" modal="true">
+        <h:form id="form-upimage" enctype="multipart/form-data">
+            <h:panelGrid columns="1" style="width: 100%">
+                <h:panelGrid columns="2">
+                    <p:fileUpload fileUploadListener="#{usuarioBean.handleFileUpload}" mode="advanced" dragDropSupport="false"
+                                  update=":formDatos:datos:foto,:mensaje" 
+                                  uploadLabel="Subir" style="width: 620px;height: 240px"
+                                  cancelLabel="Cancelar" label="Elejir" allowTypes="/(\.|\/)(jpe?g|png)$/" />
+                </h:panelGrid>
+
+
+            </h:panelGrid>
+            <p:commandButton type="button" onclick="PF('dlgUpImage').hide();" value="Cerrar"/>
+        </h:form>
+    </p:dialog>
+
+</ui:composition>

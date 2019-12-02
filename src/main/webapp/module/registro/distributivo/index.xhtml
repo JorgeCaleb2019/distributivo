@@ -1,0 +1,63 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+
+    <h:form id="formDatos">
+        <div class="card docs">
+            <div class="ui-g">
+                <div class="ui-g-12" jsf:rendered="#{distributivoController.typeOfView eq 'list'}">
+                    <div class="ui-g-12 ui-md-12 ui-lg-12"><span style="font-size: 18px">#{distributivoController.title}</span></div>
+                    <div class="ui-g-2 ui-md-4 ui-lg-6">
+                        <p:commandButton value="Crear"  actionListener="#{distributivoController.changeView('create','')}" update=":formDatos"/>
+                    </div>
+
+                    <div class="ui-g-12 ui-md-12 ui-lg-12">
+                        <div jsf:id="table">
+                            <p:dataTable value="#{distributivoController.tablaLazy}" var="item" 
+                                         lazy="true"
+                                         rows="10"
+                                         paginator="true"
+                                         paginatorPosition="top"
+                                         reflow="true"
+                                         style="font-size: 12px"
+                                         selectionMode="single" selection="#{distributivoController.entidad}"
+                                         rowKey="#{item.id}">
+
+                                <p:ajax event="rowSelect" listener="#{distributivoController.changeView('view','')}" update=":formDatos"/>
+
+                                <p:column headerText="Docente" style="font-size: 90%" filterBy="#{item.nombre}">
+                                    <h:outputText value="#{item.idDocente.nombre}"/>
+                                </p:column>
+                                <p:column headerText="Curso" style="font-size: 90%" >
+                                    <h:outputText value="#{item.idCurso.nombre}"/>
+                                </p:column>
+                                <p:column headerText="Materia" style="font-size: 90%" >
+                                    <h:outputText value="#{item.idMateria.nombre}"/>
+                                </p:column>
+                                 <p:column headerText="Aula" style="font-size: 90%" >
+                                     <h:outputText value="#{item.idAula.nombre}"/>
+                                </p:column>
+                                <p:column headerText="Estado" style="font-size: 90%" >
+                                    <h:outputText value="#{item.estado}"/>
+                                </p:column>
+
+                            </p:dataTable>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui-g-12" jsf:rendered="#{not (distributivoController.typeOfView eq 'list')}">
+                    <ui:include src="form.xhtml"/>
+                </div>
+            </div>
+        </div>
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+            <p:commandButton value="SI" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+            <p:commandButton value="NO" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+        </p:confirmDialog>
+    </h:form>
+  
+    
+</ui:composition>

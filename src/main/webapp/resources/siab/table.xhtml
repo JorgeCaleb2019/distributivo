@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+    <!-- INTERFACE -->
+    <cc:interface>
+        <cc:attribute name="bean" type="com.ecuasis.isiserp.utilidadisis.controller.SiabController" required="true"/>
+        <cc:attribute name="update" required="true"/>
+    </cc:interface>
+
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>
+        <div  jsf:rendered="#{cc.attrs.bean.typeOfView eq 'list'}">
+            <p:dataTable value="#{cc.attrs.bean.table.listItems}" var="item" 
+                         rendered="#{cc.attrs.bean.table.table}" style="font-size: 12px"
+                         selectionMode="single" selection="#{cc.attrs.bean.entidad}"
+                         rowKey="#{item.id}">
+
+                <p:ajax event="rowSelect" listener="#{cc.attrs.bean.changeView('view','')}" update="#{cc.attrs.update}"/>
+
+                <cc:insertChildren></cc:insertChildren>
+            </p:dataTable>
+        </div>
+    </cc:implementation>
+</html>

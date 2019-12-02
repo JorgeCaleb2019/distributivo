@@ -1,0 +1,70 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+
+    <h:form id="formDatos">
+        <div class="card docs">
+            <div class="ui-g">
+                <div class="ui-g-12" jsf:rendered="#{dedicacionController.typeOfView eq 'list'}">
+                    <div class="ui-g-12 ui-md-12 ui-lg-12"><span style="font-size: 18px">#{dedicacionController.title}</span></div>
+                    <div class="ui-g-2 ui-md-4 ui-lg-6">
+                        <p:commandButton value="Crear"  actionListener="#{dedicacionController.changeView('create','')}" update=":formDatos"/>
+                    </div>
+
+                    <div class="ui-g-12 ui-md-12 ui-lg-12">
+                        <div jsf:id="table">
+                            <p:dataTable value="#{dedicacionController.tablaLazy}" var="item" 
+                                         lazy="true"
+                                         rows="10"
+                                         paginator="true"
+                                         paginatorPosition="top"
+                                         reflow="true"
+                                         style="font-size: 12px"
+                                         selectionMode="single" selection="#{dedicacionController.entidad}"
+                                         rowKey="#{item.id}">
+
+                                <p:ajax event="rowSelect" listener="#{dedicacionController.changeView('view','')}" update=":formDatos"/>
+
+                                <p:column headerText="Tipo de Dedicacion" style="font-size: 90%" filterBy="#{item.nombre}">
+                                    <h:outputText value="#{item.nombre}"/>
+                                </p:column>
+                                <p:column headerText="Horas Min Clases." style="font-size: 90%" filterBy="#{item.horasMin}">
+                                    <h:outputText value="#{item.horasMin}" />
+                                </p:column>
+                                <p:column headerText="Horas Max Clases." style="font-size: 90%" filterBy="#{item.horasMax}">
+                                    <h:outputText value="#{item.horasMax}"/>
+                                </p:column>
+                                <p:column headerText="Horas Min Actividades." style="font-size: 90%" filterBy="#{item.minActividades}">
+                                    <h:outputText value="#{item.minActividades}"/>
+                                </p:column>
+                                <p:column headerText="Horas Max Actividades." style="font-size: 90%" filterBy="#{item.maxActividades}">
+                                    <h:outputText value="#{item.maxActividades}"/>
+                                </p:column>
+                                
+                                <p:column headerText="Total" style="font-size: 90%" filterBy="#{item.total}">
+                                    <h:outputText value="#{item.total}"/>
+                                </p:column>
+                                <p:column headerText="Estado" style="font-size: 90%" filterBy="#{item.estado}">
+                                    <h:outputText value="#{item.estado}"/>
+                                </p:column>
+
+                            </p:dataTable>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui-g-12" jsf:rendered="#{not (dedicacionController.typeOfView eq 'list')}">
+                    <ui:include src="form.xhtml"/>
+                </div>
+            </div>
+        </div>
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+            <p:commandButton value="SI" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+            <p:commandButton value="NO" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+        </p:confirmDialog>
+    </h:form>
+  
+    
+</ui:composition>

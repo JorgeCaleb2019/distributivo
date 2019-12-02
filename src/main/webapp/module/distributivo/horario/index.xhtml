@@ -1,0 +1,61 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:jsf="http://xmlns.jcp.org/jsf"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:form id="frmPrincipal">
+        <p:growl id="msgs" showDetail="true"/>
+        <div class="card docs">
+            <div class="ui-g">
+                <h:form id="formDatos">
+                    <div class="ui-g-12 ui-md-12 ui-lg-12"><span style="font-size: 18px">Distributivo por periodo</span></div>
+                    <div class="ui-g-2 ui-md-4 ui-lg-6">
+                        <h:panelGroup >
+                            <p:selectOneMenu value="#{horarioController.idPeriodo}" filter="true">
+                                <f:selectItem itemValue="" itemLabel="Seleccione Periodo" noSelectionOption="true"/> 
+                                <f:selectItems value="#{horarioController.periodoCombo}" var="per" 
+                                               itemLabel="#{per.titulo}" itemValue="#{per.id}"/>
+                            </p:selectOneMenu>
+                            <p:commandButton value="Cargar" actionListener="#{horarioController.cargarDistributivo()}" update="lista"/>
+                            
+                        </h:panelGroup>
+                    </div>
+
+                    <br/>
+
+                    <div class="ui-g-12 ui-md-12 ui-lg-12">
+                        <div class="card">            
+
+                            <p:dataTable  id="lista" var="item" value="#{horarioController.asignados}" sortBy="#{item.idDocente}" editable="true" 
+                                          style="font-size: 100%">
+                                <p:headerRow>
+                                    <p:column colspan="3" style="font-size: 100%">
+                                        <h:outputText value="#{item.cedula} #{item.nombreDocente}" />
+                                    </p:column>
+                                </p:headerRow>   
+
+                                <p:column headerText="Curso" style="font-size: 100%">
+                                    <h:outputText value="#{item.curso} #{item.paralelo}"/>
+                                </p:column>
+
+                                <p:column headerText="Materia" style="font-size: 100%">
+                                    <h:outputText value="#{item.materia}"/>
+                                </p:column>
+
+                                <p:column headerText="Horas" style="font-size: 100%">
+                                    <h:outputText value="#{item.numHoras}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </div>
+                    </div> 
+                </h:form>
+            </div>
+        </div>
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+            <p:commandButton value="SI" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+            <p:commandButton value="NO" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+        </p:confirmDialog>
+    </h:form>
+
+</ui:composition>

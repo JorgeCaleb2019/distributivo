@@ -1,0 +1,77 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:jsf="http://xmlns.jcp.org/jsf"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <div class="ui-g-12 ui-md-12 ui-lg-12"><span style="font-size: 18px">#{docenteController.title}</span></div>
+    <div class="ui-g-12 ui-md-12 ui-lg-12">
+        <p:commandButton value="#{docenteController.persistence.name()}"  id="accion"
+                         rendered="#{not empty docenteController.persistence.name()}"
+                         update=":mensaje :formDatos" styleClass="btn btn-danger"
+                         actionListener="#{docenteController.executeAction(evt)}">
+            <p:confirm header="Confirmación de #{docenteController.persistence.name()}" message="Esta seguro que desea realizar esta Acción" icon="ui-icon-alert" />
+        </p:commandButton> 
+        <p:spacer width="5"/>
+        <p:splitButton value="Acciones" styleClass="blue-grey-btn" rendered="#{docenteController.typeOfView eq 'view'}">
+            <p:menuitem value="Modificar" icon="ui-icon-pencil" actionListener="#{docenteController.changeView('edit','')}" update=":formDatos"/>
+            <p:menuitem value="Eliminar" icon="ui-icon-close" actionListener="#{docenteController.changeView('delete','')}" update=":formDatos"/>
+        </p:splitButton>
+        <p:spacer width="5"/>
+        <p:commandButton value="Atrás"  actionListener="#{docenteController.changeView('list','')}" 
+                         update=":formDatos" immediate="true" styleClass="teal-btn"/>
+        <br/>
+        <br/>
+        <hr/>
+        <div class="ui-g-12 ui-md-12 ui-lg-12">
+            <div class="card">
+                <p:panelGrid id="datos_docente" columns="4" layout="grid">
+                    <p:outputLabel value="Nombres" for="nombre" />
+                    <p:inputText id="nombre" value="#{docenteController.entidad.nombre}" required="true" requiredMessage="El nombre es requerido"
+                                 readonly="#{docenteController.typeOfView eq 'view' or docenteController.typeOfView eq 'delete'}"/>
+                    <p:outputLabel value="Identificación" for="cedula" />
+                    <p:inputText id="cedula" value="#{docenteController.entidad.cedula}" required="true" requiredMessage="La identificación es Requerida"
+                                 readonly="#{docenteController.typeOfView eq 'view' or docenteController.typeOfView eq 'delete'}"/>              
+                    <p:outputLabel value="Teléfono" for="telefono" />
+                    <p:inputText id="telefono" value="#{docenteController.entidad.telefono}"
+                                 readonly="#{docenteController.typeOfView eq 'view' or docenteController.typeOfView eq 'delete'}"/>
+                    <p:outputLabel value="Celular" for="celular" />
+                    <p:inputText id="celular" value="#{docenteController.entidad.celular}"
+                                 readonly="#{docenteController.typeOfView eq 'view' or docenteController.typeOfView eq 'delete'}"/>
+                    <p:outputLabel value="Correo" for="correo" />
+                    <p:inputText id="correo" value="#{docenteController.entidad.correo}"
+                                 readonly="#{docenteController.typeOfView eq 'view' or docenteController.typeOfView eq 'delete'}"/>
+                    <p:outputLabel value="Horas Permitidas" for="horasPermitidas" />
+                    <p:inputText id="horasPermitidas" value="#{docenteController.entidad.horasPermitidas}" required="true" requiredMessage="Horas Permitidas de Clase es Requerida"
+                                 readonly="#{docenteController.typeOfView eq 'view' or docenteController.typeOfView eq 'delete'}"/>
+                    <p:outputLabel value="Horas Tutoria" for="horasTutoria" />
+                    <p:inputText id="horasTutoria" value="#{docenteController.entidad.horasTutoria}"
+                                 readonly="#{docenteController.typeOfView eq 'view' or docenteController.typeOfView eq 'delete'}"/>
+                    <p:outputLabel value="Horas Adicionales" for="horasAdicionales" />
+                    <p:inputText id="horasAdicionales" value="#{docenteController.entidad.horasAdicionales}" 
+                                 readonly="#{docenteController.typeOfView eq 'view' or docenteController.typeOfView eq 'delete'}"/>
+                    <p:outputLabel value="Fecha Nacimiento" for="fechaNacimiento" />
+                    <p:calendar id="fechaNacimiento" pattern="MM/dd/yyyy" value="#{docenteController.entidad.fechaNacimiento}" required="true" requiredMessage="La Fecha de Nacimiento es Requerida"
+                                disabled="#{docenteController.typeOfView eq 'view' or docenteController.typeOfView eq 'delete'}"/>
+                    <p:outputLabel value="Titulo de Tercer Nivel" for="tituloTercerNivel" />
+                    <p:inputText id="tituloTercerNivel" value="#{docenteController.entidad.tituloTercerNivel}" required="true" requiredMessage="El titulo de tercer nivel es requerido"
+                                 readonly="#{docenteController.typeOfView eq 'view' or docenteController.typeOfView eq 'delete'}"/>
+                    <p:outputLabel value="Codigo del Senescyt" for="codigoSenescyt" />
+                    <p:inputText id="codigoSenescyt" value="#{docenteController.entidad.codigoSenescyt}" required="true" requiredMessage="El código del senescyt es requerido"
+                                 readonly="#{docenteController.typeOfView eq 'view' or docenteController.typeOfView eq 'delete'}"/>
+                    <p:outputLabel value="Titulo de Cuarto Nivel" for="tituloCuartoNivel" />
+                    <p:inputText id="tituloCuartoNivel" value="#{docenteController.entidad.tituloCuartoNivel}"
+                                 readonly="#{docenteController.typeOfView eq 'view' or docenteController.typeOfView eq 'delete'}"/>
+                    <p:outputLabel value="Tipo Jornada" for="tipoJornada" />
+                    <p:selectOneMenu id="tipoJornada"  value="#{docenteController.entidad.tipoJornada}"
+                                     disabled="#{docenteController.typeOfView eq 'view' or docenteController.typeOfView eq 'delete'}">
+                        <f:selectItem itemLabel="Medio Tiempo" itemValue="MED"/>
+                        <f:selectItem itemLabel="Tiempo Completo" itemValue="TIC"/>
+                        <f:selectItem itemLabel="Tiempo Parcial" itemValue="TIP"/>
+                    </p:selectOneMenu>
+                </p:panelGrid>
+            </div>
+        </div>    
+    </div>  
+</ui:composition>

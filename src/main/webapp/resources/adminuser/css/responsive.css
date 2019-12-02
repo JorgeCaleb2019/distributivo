@@ -1,0 +1,84 @@
+/*html,body{
+    margin:0px;
+    height:100%;
+    background: #f7f7f7;
+}
+.navbar{
+    width: 100%;
+    height: 50px;
+    background-color: #30404f;
+}
+.navbar-content{
+    margin-left: 20%;
+}
+.navbar-content i{
+    color: #ffffff;
+    margin-top: 10px;
+}
+.navbar-content a{
+    cursor: pointer;
+}
+.user{
+    color: #ffffff;
+    display: inline;
+    float: right;  
+    margin-top: 15px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+.user span{
+    font-size: 14px !important;
+}
+.separador{
+    width: 3px;
+    background-color: #ffffff;
+    height: 50px;
+    float: right;
+    margin-right: 5px;
+}
+.card{
+    border-radius: 10px !important;
+    background-color: #2E7D32;
+}
+/*reloj
+.ui-clock{
+    margin-top: 10px;
+    float: right;
+}
+/*body .ui-widget-header{
+    background-color: transparent!important;
+    border: none!important;
+}
+/*fin de reloaj*/
+
+.power-off{
+    float: right;
+}
+#reloj{
+    width: 20%;
+    height: 100px;
+    background: #30404f;
+    text-align: center;
+    margin-left: 40%;
+}
+#conten-reloj{
+    position: absolute; 
+    bottom: 0%; 
+    width: 100%;
+}
+
+.item-menu{
+    width: 33.333%;
+    float: left;
+    height: 200px;
+}
+
+.contenedor-menu{
+    width: 90%;
+    display: block;
+    margin-left: 5%;
+}
+.menu{
+    width: 60%;
+    margin-left: 20%;
+}

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+  <persistence-unit name="distributivoPU" transaction-type="JTA">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <jta-data-source>jdbc/_distributivo</jta-data-source>
+    <class>com.distributivo.model.business.Adicionale</class>
+    <class>com.distributivo.model.business.Auditoria</class>
+    <class>com.distributivo.model.business.Curso</class>
+    <class>com.distributivo.model.business.Dedicacion</class>
+    <class>com.distributivo.model.business.DistributivoCabecera</class>
+    <class>com.distributivo.model.business.DistributivoDetalle</class>
+    <class>com.distributivo.model.business.Docente</class>
+    <class>com.distributivo.model.business.Institucion</class>
+    <class>com.distributivo.model.business.MallaCabecera</class>
+    <class>com.distributivo.model.business.MallaDetalle</class>
+    <class>com.distributivo.model.business.Materia</class>
+    <class>com.distributivo.model.business.Paralelo</class>
+    <class>com.distributivo.model.business.ParaleloCurso</class>
+    <class>com.distributivo.model.business.Periodo</class>
+    <class>com.distributivo.model.business.TipoActividad</class>
+    <class>com.distributivo.model.business.Titularidad</class>
+    <class>com.distributivo.model.business.TitularidadDedicacion</class>
+    <class>com.distributivo.model.security.Grupo</class>
+    <class>com.distributivo.model.security.Permiso</class>
+    <class>com.distributivo.model.security.Rol</class>
+    <class>com.distributivo.model.security.TipoPermiso</class>
+    <class>com.distributivo.model.security.Usuario</class>
+    <class>com.distributivo.model.security.ViewPermiso</class>
+    <class>com.distributivo.model.security.ViewPermisoSistema</class>
+    <class>com.distributivo.model.business.Configuracion</class>
+    <exclude-unlisted-classes>false</exclude-unlisted-classes>
+    <shared-cache-mode>NONE</shared-cache-mode>
+    <properties>
+    </properties>
+  </persistence-unit>
+</persistence>
